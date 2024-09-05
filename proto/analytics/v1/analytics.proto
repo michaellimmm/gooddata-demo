@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+package analytics.v1;
+
+import "validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+
+option go_package = "github/michaellimmm/gooddata-demo/generated/analytics/v1;analytics";
+
+message RegisterAccountRequest {
+    string email = 1;
+    string password = 2;
+    string name = 3;
+    string tenant_id = 4;
+}
+
+message RequestAccountResponse {
+    string email = 1;
+    string name = 2;
+    string tenant_id = 3;
+    string access_token = 4;
+}
+
+message LoginRequest {
+    string email = 1;
+    string password = 2;
+}
+
+message LoginResponse {
+    string email = 1;
+    string name = 2;
+    string tenant_id = 3;
+    string access_token = 4;
+}
+
+message GetTokenRequest {
+    string tenant_id = 1;
+}
+
+message GetTokenResponse {
+    string access_token = 1;
+}
+
+service AnalyticService {
+    rpc RegisterAccount(RegisterAccountRequest) returns (RequestAccountResponse) {
+        option (google.api.http) = {
+            post: "/v1/register",
+            body: "*",
+          };
+    }
+
+    rpc Login(LoginRequest) returns (LoginResponse) {
+        option (google.api.http) = {
+            post: "/v1/login",
+            body: "*",
+        };
+    }
+
+    rpc GetToken(GetTokenRequest) returns (GetTokenResponse) {
+        option (google.api.http) = {
+            post: "/v1/token",
+            body: "*",
+        };
+    }
+}

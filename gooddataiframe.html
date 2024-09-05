@@ -1,0 +1,60 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <iframe
+      src="https://helpful-duck.trial.cloud.gooddata.com/dashboards/embedded/#/workspace/8c2c485fdc6c49daad00188dec826e17/dashboard/4f6a42ad-6629-4530-b175-3c8af6a6f2c5?showNavigation=true&setHeight=700&apiTokenAuthentication=true"
+      height="700px"
+      width="100%"
+      frameborder="0"
+      id="embedded-app-frame"
+    ></iframe>
+    <script>
+      console.log("Setup parent frame message listener");
+
+      window.addEventListener(
+        "message",
+        function (event) {
+          console.log("Post message received", event);
+
+          const eventName = event.data.gdc?.event.name;
+
+          // Assuming you already have an existing JWT, store it in 'existingJwt'
+          const existingJwt =
+            "eyJhbGciOiJSUzI1NiIsImtpZCI6InplYWxzX2dvb2RkYXRhX2tpZCIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTY1NDA4MTMsImlhdCI6MTcxNjUzNzIxMywianRpIjoiYjMzNWE0ODEtMjFhNC00MmExLWI5YzItNmU4NTU3M2ZmOTQ0Iiwic3ViIjoidV90ZW5hbnQxIn0.QudMxUngOjBs1ERZ_NYVfuhfUU-SA03yQ89PZ8DxWkWkXVywLYZtfaJLqgf-qCzddd9cFgxNoP8ZxOCcQBWvkiPlGsgohTZMQ3FgoHSMpD6VMO-KrrYpxywg_kImAgm2FlznQmbVR12NGkYza9q7hr7-Q_mqbgfuHo6oR1GOU6XF01lszUwOkdRx_x6UaFmPvTJEYHizFG3P89s7QMvolmv6ggy3d4okLuX3GglfxuGxT3Iz_8dLAzxNhWos_eXFVT0VZ-e2RXesdxO5R9VVAyWfN-8Mk-H2d3VT19GpM5gyw4MLNeCrCocYi7Es_cmTesoWRtn7b0JsYs_7ZnEV9A"; // Replace with your actual JWT
+
+          if (
+            eventName === "listeningForApiToken" ||
+            eventName === "apiTokenIsAboutToExpire"
+          ) {
+            const postMessageStructure = {
+              gdc: {
+                product: "dashboard",
+                event: {
+                  name: "setApiToken",
+                  data: {
+                    token:
+                      "eyJhbGciOiJSUzI1NiIsImtpZCI6InplYWxzX2dvb2RkYXRhX2tpZCIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTY1NDA4MTMsImlhdCI6MTcxNjUzNzIxMywianRpIjoiYjMzNWE0ODEtMjFhNC00MmExLWI5YzItNmU4NTU3M2ZmOTQ0Iiwic3ViIjoidV90ZW5hbnQxIn0.QudMxUngOjBs1ERZ_NYVfuhfUU-SA03yQ89PZ8DxWkWkXVywLYZtfaJLqgf-qCzddd9cFgxNoP8ZxOCcQBWvkiPlGsgohTZMQ3FgoHSMpD6VMO-KrrYpxywg_kImAgm2FlznQmbVR12NGkYza9q7hr7-Q_mqbgfuHo6oR1GOU6XF01lszUwOkdRx_x6UaFmPvTJEYHizFG3P89s7QMvolmv6ggy3d4okLuX3GglfxuGxT3Iz_8dLAzxNhWos_eXFVT0VZ-e2RXesdxO5R9VVAyWfN-8Mk-H2d3VT19GpM5gyw4MLNeCrCocYi7Es_cmTesoWRtn7b0JsYs_7ZnEV9A",
+                    type: "jwt",
+                    secondsBeforeTokenExpirationToEmitReminder: 60,
+                  },
+                },
+              },
+            };
+
+            console.log("Sending existing JWT to embedded window");
+
+            const origin = "*";
+            const iframe =
+              document.getElementById("embedded-app-frame").contentWindow;
+            iframe.postMessage(postMessageStructure, origin);
+          }
+        },
+        false
+      );
+    </script>
+  </body>
+</html>
